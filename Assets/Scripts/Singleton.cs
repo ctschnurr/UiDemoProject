@@ -16,5 +16,7 @@ public class Singleton : MonoBehaviour
         {
             instance = this;
         }
+
+        DontDestroyOnLoad(instance);
     }
 }
