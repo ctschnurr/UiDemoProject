@@ -1,21 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using static gameManager;
 
 public class menuManager : MonoBehaviour
 {
-    screenManager screenManager;
+    static screenManager screenManager;
+    public static Slider volumeSlider;
+
+    static float volume;
     // Start is called before the first frame update
     void Start()
     {
         screenManager = GameObject.Find("ScreenManager").GetComponent<screenManager>();
+        volumeSlider = GameObject.Find("GameManager/ScreenManager/Options/VolumeSlider").GetComponent<Slider>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        float sliderValue = volumeSlider.value;
+        Screen.brightness = sliderValue;
+    }
+
+    public void ToggleFullScreen()
+    {
+        if (Screen.fullScreen == true) Screen.fullScreen = false;
+        else Screen.fullScreen = true;
     }
 
     public void SetMainMenu()
@@ -30,7 +43,7 @@ public class menuManager : MonoBehaviour
 
     public void SetPause()
     {
-        screenManager.SetScreen(screenManager.Screen.pause);
+        gameManager.Pause();
     }
 
     public void SetGameplay()
@@ -53,18 +66,31 @@ public class menuManager : MonoBehaviour
         screenManager.SetScreen(screenManager.Screen.credits);
     }
 
-    public void BackButtion()
-    {
-        screenManager.SetScreen(screenManager.lastScreen);
-    }
-
     public void SetTitleScene()
     {
         SetScene(sceneState.titleScene);
+        screenManager.SetScreen(screenManager.Screen.mainMenu);
     }
 
     public void SetGameplayScene()
     {
         SetScene(sceneState.gameplayScene);
+        screenManager.SetScreen(screenManager.Screen.gameplay);
+    }
+
+    public void NewGame()
+    {
+        SetScene(sceneState.gameplayScene);
+        screenManager.SetScreen(screenManager.Screen.gameplay);
+    }
+
+    public void BackButton()
+    {
+        screenManager.SetScreen(screenManager.lastScreen);
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }

@@ -43,14 +43,16 @@ public class screenManager : MonoBehaviour
         loseObject = transform.Find("Lose").gameObject;
         creditsObject = transform.Find("Credits").gameObject;
 
-        screenList = new List<GameObject>();
-        screenList.Add(mainMenuObject);
-        screenList.Add(optionsObject);
-        screenList.Add(gameplayObject);
-        screenList.Add(pauseObject);
-        screenList.Add(winObject);
-        screenList.Add(loseObject);
-        screenList.Add(creditsObject);
+        screenList = new List<GameObject>
+        {
+            mainMenuObject,
+            optionsObject,
+            gameplayObject,
+            pauseObject,
+            winObject,
+            loseObject,
+            creditsObject
+        };
 
         ClearScreen();
     }

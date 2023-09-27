@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,13 +11,31 @@ public class gameManager : MonoBehaviour
         gameplayScene
     }
 
+    public static bool paused = false;
+
     screenManager screenManager;
+
     // Start is called before the first frame update
     void Start()
     {
         screenManager = GameObject.Find("ScreenManager").GetComponent<screenManager>();
         screenManager.SetupScreens();
-        screenManager.SetScreen(screenManager.Screen.mainMenu);
+
+        Debug.Log(SceneManager.GetActiveScene().name);
+
+        if (SceneManager.GetActiveScene().name == "TitleScene")
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            screenManager.SetScreen(screenManager.Screen.mainMenu);
+        }
+
+        if (SceneManager.GetActiveScene().name == "GameplayScene")
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            screenManager.SetScreen(screenManager.Screen.gameplay);
+        }
     }
 
     // Update is called once per frame
@@ -29,15 +46,56 @@ public class gameManager : MonoBehaviour
 
     public static void SetScene(sceneState input)
     {
+        screenManager.ClearScreen();
+
         switch(input)
         {
             case sceneState.titleScene:
-                SceneManager.LoadScene(sceneName: "TitleScene");
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                SceneManager.LoadScene("TitleScene");
                 break;
 
             case sceneState.gameplayScene:
-                SceneManager.LoadScene(sceneName: "GameplayScene");
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+                paused = false;
+                SceneManager.LoadScene("GameplayScene");
                 break;
         }
+    }
+
+    public static void Pause()
+    {
+        if(paused)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            screenManager.SetScreen(screenManager.Screen.gameplay);
+            paused = false;
+        }
+        else
+        {
+            paused = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            screenManager.SetScreen(screenManager.Screen.pause);
+        }
+    }
+
+    public static void WinGame()
+    {
+        paused = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        screenManager.SetScreen(screenManager.Screen.win);
+    }
+
+    public static void LoseGame()
+    {
+        paused = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        screenManager.SetScreen(screenManager.Screen.lose);
     }
 }

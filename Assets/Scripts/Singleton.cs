@@ -10,13 +10,13 @@ public class Singleton : MonoBehaviour
     {
         if (instance != null)
         {
-            Destroy(instance);
+            Destroy(gameObject);
         }
         else
         {
             instance = this;
+            DontDestroyOnLoad(this.gameObject);
         }
 
-        DontDestroyOnLoad(instance);
     }
 }
