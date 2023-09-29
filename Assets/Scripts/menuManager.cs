@@ -9,20 +9,29 @@ public class menuManager : MonoBehaviour
 {
     static screenManager screenManager;
     public static Slider volumeSlider;
+    public static AudioSource musicSource;
 
-    static float volume;
+    static float delay = 0f;
     // Start is called before the first frame update
     void Start()
     {
         screenManager = GameObject.Find("ScreenManager").GetComponent<screenManager>();
         volumeSlider = GameObject.Find("GameManager/ScreenManager/Options/VolumeSlider").GetComponent<Slider>();
+        musicSource = GameObject.Find("GameManager/MenuManager/Music").GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
         float sliderValue = volumeSlider.value;
-        Screen.brightness = sliderValue;
+        musicSource.volume = sliderValue;
+
+        delay -= Time.deltaTime;
+        if (delay <= 0 && !musicSource.isPlaying)
+        {
+            musicSource.Play();
+            delay = -1;
+        }
     }
 
     public void ToggleFullScreen()
