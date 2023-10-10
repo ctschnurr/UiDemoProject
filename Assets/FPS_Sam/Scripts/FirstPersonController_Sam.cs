@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 // Sam Robichaud 2022
 // NSCC-Truro
@@ -105,6 +106,10 @@ public class FirstPersonController_Sam : MonoBehaviour
 
     private Camera playerCamera;
     private CharacterController characterController;
+    
+    private TextMeshPro gunHud;
+    private int ammoInClip = 9;
+    private int ammoReloadAmount = 9;
 
     private Vector3 moveDirection;
     private Vector2 currentInput;
@@ -116,8 +121,10 @@ public class FirstPersonController_Sam : MonoBehaviour
         playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
         defaultYPos = playerCamera.transform.localPosition.y;
-        defaultFOV = playerCamera.fieldOfView;        
+        defaultFOV = playerCamera.fieldOfView;
 
+        gunHud = GetComponentInChildren<TextMeshPro>();
+        gunHud.text = ammoInClip.ToString();
 
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
@@ -142,12 +149,27 @@ public class FirstPersonController_Sam : MonoBehaviour
             }
 
             if (Input.GetKeyDown("escape")) gameManager.Pause();
+            if (Input.GetMouseButtonDown(0)) Fire();
         }
     }
 
     private void LateUpdate()
     {
 
+    }
+
+    private void Fire()
+    {
+        if (ammoInClip > 0)
+        {
+            ammoInClip--;
+            gunHud.text = ammoInClip.ToString();
+        }
+        else
+        {
+            ammoInClip = ammoReloadAmount;
+            gunHud.text = ammoInClip.ToString();
+        }
     }
 
     private void HandleMovementInput()
