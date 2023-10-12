@@ -18,7 +18,10 @@ public class cylinders : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(this.name == "WinCylinder") gameManager.WinGame();
-        if (this.name == "LoseCylinder") gameManager.LoseGame();
+        if(other.gameObject.tag == "Player")
+        {
+            if (this.name == "WinCylinder") gameManager.WinGame();
+            if (this.name == "LoseCylinder") gameManager.LoseGame();
+        }
     }
 }

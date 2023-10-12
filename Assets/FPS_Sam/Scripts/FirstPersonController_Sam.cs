@@ -9,6 +9,7 @@ using TMPro;
 
 public class FirstPersonController_Sam : MonoBehaviour
 {
+    public GameObject projectile;
     public bool canMove { get; private set; } = true;
     private bool isRunning => canRun && Input.GetKey(runKey);
     private bool shouldJump => Input.GetKeyDown(jumpKey) && characterController.isGrounded;
@@ -116,6 +117,12 @@ public class FirstPersonController_Sam : MonoBehaviour
 
     private float rotationX = 0;
 
+    private Transform projectileOrigin;
+    private bool reloading = false;
+    private float reloadTimer = 2;
+    private float reloadTimerReset = 2;
+    private float playerHealth = 100;
+
     private void Awake()
     {
         playerCamera = GetComponentInChildren<Camera>();
@@ -123,8 +130,12 @@ public class FirstPersonController_Sam : MonoBehaviour
         defaultYPos = playerCamera.transform.localPosition.y;
         defaultFOV = playerCamera.fieldOfView;
 
+
         gunHud = GetComponentInChildren<TextMeshPro>();
         gunHud.text = ammoInClip.ToString();
+
+        GameObject projectileOriginGO = GameObject.Find("Player/Cam/Gun/ProjectileOrigin");
+        projectileOrigin = projectileOriginGO.transform;
 
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
@@ -149,7 +160,21 @@ public class FirstPersonController_Sam : MonoBehaviour
             }
 
             if (Input.GetKeyDown("escape")) gameManager.Pause();
-            if (Input.GetMouseButtonDown(0)) Fire();
+            if (Input.GetMouseButtonDown(0) && !reloading) Fire();
+        }
+
+        if(reloading)
+        {
+            reloadTimer -= Time.deltaTime;
+            if(reloadTimer <= 0)
+            {
+                reloadTimer = reloadTimerReset;
+                reloading = false;
+
+                ammoInClip = ammoReloadAmount;
+                gunHud.text = ammoInClip.ToString();
+                screenManager.UpdateGunStatus("Ready");
+            }
         }
     }
 
@@ -164,12 +189,24 @@ public class FirstPersonController_Sam : MonoBehaviour
         {
             ammoInClip--;
             gunHud.text = ammoInClip.ToString();
+            Instantiate(projectile, projectileOrigin.position, projectileOrigin.rotation);
         }
         else
         {
-            ammoInClip = ammoReloadAmount;
-            gunHud.text = ammoInClip.ToString();
+            Reload();
         }
+    }
+
+    private void Reload()
+    {
+        gunHud.text = "-";
+        reloading = true;
+        screenManager.UpdateGunStatus("Reloading...");
+    }
+
+    public void TakeDamage(int damage)
+    {
+        playerHealth -= damage;
     }
 
     private void HandleMovementInput()

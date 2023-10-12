@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class screenManager : MonoBehaviour
 {
@@ -23,8 +25,12 @@ public class screenManager : MonoBehaviour
     static GameObject loseObject;
     static GameObject creditsObject;
 
+    static TextMeshProUGUI gunStatus;
+
     public static Screen currentScreen;
     public static Screen lastScreen;
+
+    static Image damageOverlay;
 
     static List<GameObject> screenList;
     // Start is called before the first frame update
@@ -53,6 +59,9 @@ public class screenManager : MonoBehaviour
             loseObject,
             creditsObject
         };
+
+        gunStatus = gameplayObject.transform.Find("GunStatus").GetComponent<TextMeshProUGUI>();
+        damageOverlay = gameplayObject.transform.Find("DamageOverlay").GetComponent<Image>();
 
         ClearScreen();
     }
@@ -111,5 +120,17 @@ public class screenManager : MonoBehaviour
     public static void ClearScreen()
     {
         foreach(GameObject screen in screenList) if (screen.activeSelf) screen.SetActive(false);
+    }
+
+    public static void UpdateGunStatus(string input)
+    {
+        gunStatus.text = "Status: " + input;
+    }
+
+    public static void ApplyDamageOverlay(float health)
+    {
+        Color tempcolor = damageOverlay.color;
+        tempcolor.a = 100 - health;
+        damageOverlay.color = tempcolor;
     }
 }
