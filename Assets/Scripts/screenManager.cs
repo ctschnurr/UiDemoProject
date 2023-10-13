@@ -26,6 +26,7 @@ public class screenManager : MonoBehaviour
     static GameObject creditsObject;
 
     static TextMeshProUGUI gunStatus;
+    static TextMeshProUGUI playerHealth;
 
     public static Screen currentScreen;
     public static Screen lastScreen;
@@ -61,6 +62,7 @@ public class screenManager : MonoBehaviour
         };
 
         gunStatus = gameplayObject.transform.Find("GunStatus").GetComponent<TextMeshProUGUI>();
+        playerHealth = gameplayObject.transform.Find("PlayerHealth").GetComponent<TextMeshProUGUI>();
         damageOverlay = gameplayObject.transform.Find("DamageOverlay").GetComponent<Image>();
 
         ClearScreen();
@@ -69,7 +71,7 @@ public class screenManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        UpdatePlayerHealth();
     }
 
     public static void SetScreen(Screen input)
@@ -105,6 +107,7 @@ public class screenManager : MonoBehaviour
                 break;
 
             case Screen.lose:
+                gameplayObject.SetActive(true);
                 loseObject.SetActive(true);
                 currentScreen = Screen.lose;
                 break;
@@ -127,10 +130,23 @@ public class screenManager : MonoBehaviour
         gunStatus.text = "Status: " + input;
     }
 
-    public static void ApplyDamageOverlay(float health)
+    public static void UpdatePlayerHealth()
     {
-        Color tempcolor = damageOverlay.color;
-        tempcolor.a = 100 - health;
-        damageOverlay.color = tempcolor;
+        float hp = FirstPersonController_Sam.GetPlayerHealth();
+        playerHealth.text = "HP: " + hp;
+
+        if(hp <= 10)
+        {
+            Color tempcolor = damageOverlay.color;
+            tempcolor.a = 1 - (hp / 10);
+            Debug.Log(tempcolor.a);
+            damageOverlay.color = tempcolor;
+        }
+        if(hp > 10)
+        {
+            Color tempcolor = damageOverlay.color;
+            tempcolor.a = 0;
+            damageOverlay.color = tempcolor;
+        }
     }
 }

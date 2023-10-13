@@ -6,10 +6,20 @@ using TMPro;
 // Sam Robichaud 2022
 // NSCC-Truro
 // Based on tutorial by (Comp - 3 Interactive)  * with modifications *
+// further modifications by Chris Schnurr
 
 public class FirstPersonController_Sam : MonoBehaviour
 {
+    public enum State
+    {
+        inactive,
+        active
+    }
+
+    private State state = State.active;
+
     public GameObject projectile;
+    public GameObject guide;
     public bool canMove { get; private set; } = true;
     private bool isRunning => canRun && Input.GetKey(runKey);
     private bool shouldJump => Input.GetKeyDown(jumpKey) && characterController.isGrounded;
@@ -118,10 +128,21 @@ public class FirstPersonController_Sam : MonoBehaviour
     private float rotationX = 0;
 
     private Transform projectileOrigin;
+    private Transform guideOrigin;
     private bool reloading = false;
     private float reloadTimer = 2;
     private float reloadTimerReset = 2;
-    private float playerHealth = 100;
+
+    private static float playerHealth = 20;
+    private float playerMaxHealth = 20;
+    private bool regenerating = false;
+    private static bool decaying = false;
+    private float regenTimer = 3f;
+    private float regenTimerReset = 3f;
+    private float decayTimer = 1f;
+    private float decayTimerReset = 1f;
+
+    
 
     private void Awake()
     {
@@ -130,15 +151,19 @@ public class FirstPersonController_Sam : MonoBehaviour
         defaultYPos = playerCamera.transform.localPosition.y;
         defaultFOV = playerCamera.fieldOfView;
 
-
         gunHud = GetComponentInChildren<TextMeshPro>();
         gunHud.text = ammoInClip.ToString();
 
         GameObject projectileOriginGO = GameObject.Find("Player/Cam/Gun/ProjectileOrigin");
+        GameObject guideGO = GameObject.Find("Player/GuidePos");
         projectileOrigin = projectileOriginGO.transform;
+        guideOrigin = guideGO.transform;
 
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
+        playerHealth = playerMaxHealth;
+        state = State.active;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Update()
@@ -161,6 +186,7 @@ public class FirstPersonController_Sam : MonoBehaviour
 
             if (Input.GetKeyDown("escape")) gameManager.Pause();
             if (Input.GetMouseButtonDown(0) && !reloading) Fire();
+            if (Input.GetKeyDown("g")) Instantiate(guide, guideOrigin.position, guideOrigin.rotation);
         }
 
         if(reloading)
@@ -176,6 +202,65 @@ public class FirstPersonController_Sam : MonoBehaviour
                 screenManager.UpdateGunStatus("Ready");
             }
         }
+
+        if(state == State.active)
+        {
+            if (playerHealth < playerMaxHealth && !decaying && !regenerating)
+            {
+                regenTimer -= Time.deltaTime;
+                if (regenTimer <= 0)
+                {
+                    screenManager.UpdateGunStatus("Regenerating Health");
+                    regenerating = true;
+                    regenTimer = 1;
+                }
+            }
+
+            if (regenerating)
+            {
+                if (playerHealth < playerMaxHealth)
+                {
+                    regenTimer -= Time.deltaTime;
+                    if (regenTimer <= 0)
+                    {
+                        playerHealth++;
+                        regenTimer = 1;
+                    }
+                }
+                else if (playerHealth >= playerMaxHealth)
+                {
+                    screenManager.UpdateGunStatus("Ready");
+                    regenerating = false;
+                    playerHealth = playerMaxHealth;
+                    regenTimer = regenTimerReset;
+                }
+            }
+
+            if (decaying)
+            {
+                if (playerHealth > 0)
+                {
+                    decayTimer -= Time.deltaTime;
+                    if (decayTimer <= 0)
+                    {
+                        screenManager.UpdateGunStatus("Corrosive Damage Detected");
+                        playerHealth--;
+                        decayTimer = decayTimerReset;
+                    }
+                }
+                else
+                {
+                    screenManager.UpdateGunStatus("You are dead");
+                    gameManager.LoseGame();
+                    decaying = false;
+                    playerHealth = 0;
+                    decayTimer = decayTimerReset;
+                    state = State.inactive;
+                }
+            }
+        }
+
+        
     }
 
     private void LateUpdate()
@@ -204,9 +289,20 @@ public class FirstPersonController_Sam : MonoBehaviour
         screenManager.UpdateGunStatus("Reloading...");
     }
 
-    public void TakeDamage(int damage)
+    public static void SetDecay()
     {
-        playerHealth -= damage;
+        decaying = true;
+    }
+
+    public static void RemoveDecay()
+    {
+        decaying = false;
+        screenManager.UpdateGunStatus("Ready");
+    }
+
+    public static float GetPlayerHealth()
+    {
+        return playerHealth;
     }
 
     private void HandleMovementInput()

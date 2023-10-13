@@ -21,7 +21,15 @@ public class cylinders : MonoBehaviour
         if(other.gameObject.tag == "Player")
         {
             if (this.name == "WinCylinder") gameManager.WinGame();
-            if (this.name == "LoseCylinder") gameManager.LoseGame();
+            if (this.name == "DeathSphere") FirstPersonController_Sam.SetDecay();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            if (this.name == "DeathSphere") FirstPersonController_Sam.RemoveDecay();
         }
     }
 }
