@@ -63,7 +63,7 @@ public class screenManager : MonoBehaviour
 
         gunStatus = gameplayObject.transform.Find("GunStatus").GetComponent<TextMeshProUGUI>();
         playerHealth = gameplayObject.transform.Find("PlayerHealth").GetComponent<TextMeshProUGUI>();
-        damageOverlay = gameplayObject.transform.Find("DamageOverlay").GetComponent<Image>();
+        damageOverlay = GameObject.Find("DamageOverlay").GetComponent<Image>();
 
         ClearScreen();
     }
