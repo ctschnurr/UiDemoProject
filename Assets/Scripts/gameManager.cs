@@ -18,10 +18,10 @@ public class gameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        menuManager.MusicSource.Play();
+
         screenManager = GameObject.Find("ScreenManager").GetComponent<screenManager>();
         screenManager.SetupScreens();
-
-        Debug.Log(SceneManager.GetActiveScene().name);
 
         if (SceneManager.GetActiveScene().name == "TitleScene")
         {
@@ -73,13 +73,18 @@ public class gameManager : MonoBehaviour
             Cursor.visible = false;
             screenManager.SetScreen(screenManager.Screen.gameplay);
             paused = false;
+            menuManager.TogglePauseAudio();
+            Time.timeScale = 1;
         }
         else
         {
+            Time.timeScale = 0;
             paused = true;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             screenManager.SetScreen(screenManager.Screen.pause);
+
+            menuManager.TogglePauseAudio();
         }
     }
 

@@ -9,8 +9,13 @@ public class menuManager : MonoBehaviour
 {
     static screenManager screenManager;
     public static Slider volumeSlider;
-    public static AudioSource musicSource;
-
+    private static AudioSource musicSource;
+    public static AudioSource MusicSource { get { return musicSource; } set { musicSource = value; } }
+    public static Slider sfxVolumeSlider;
+    private static AudioSource sfxSource;
+    private static AudioSource sizzleSource;
+    public static AudioSource SfxSource { get { return sfxSource; } set { sfxSource = value; } }
+    private static List<AudioSource> audioSources;
     static float delay = 0f;
     // Start is called before the first frame update
     void Start()
@@ -18,6 +23,13 @@ public class menuManager : MonoBehaviour
         screenManager = GameObject.Find("ScreenManager").GetComponent<screenManager>();
         volumeSlider = GameObject.Find("GameManager/ScreenManager/Options/VolumeSlider").GetComponent<Slider>();
         musicSource = GameObject.Find("GameManager/MenuManager/Music").GetComponent<AudioSource>();
+
+        sfxVolumeSlider = GameObject.Find("GameManager/ScreenManager/Options/SfxVolumeSlider").GetComponent<Slider>();
+        sfxSource = GameObject.Find("Player/SFXSource").GetComponent<AudioSource>();
+
+        sizzleSource = GameObject.Find("DeathSphere/sfx").GetComponent<AudioSource>();
+
+        audioSources = new List<AudioSource>() { musicSource, sfxSource, sizzleSource };
     }
 
     // Update is called once per frame
@@ -26,12 +38,29 @@ public class menuManager : MonoBehaviour
         float sliderValue = volumeSlider.value;
         musicSource.volume = sliderValue;
 
-        delay -= Time.deltaTime;
-        if (delay <= 0 && !musicSource.isPlaying)
+        float sfxSliderValue = sfxVolumeSlider.value;
+        sfxSource.volume = sfxSliderValue;
+        sizzleSource.volume = sfxSliderValue;
+
+    }
+
+    public static void TogglePauseAudio()
+    {
+        if(gameManager.paused)
         {
-            musicSource.Play();
-            delay = -1;
+            foreach(AudioSource audio in audioSources)
+            {
+                audio.Pause();
+            }
         }
+        else
+        {
+            foreach (AudioSource audio in audioSources)
+            {
+                audio.UnPause();
+            }
+        }
+
     }
 
     public void ToggleFullScreen()

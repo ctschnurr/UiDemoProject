@@ -29,7 +29,11 @@ public class cylinders : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            if (this.name == "DeathSphere") FirstPersonController_Sam.RemoveDecay();
+            if (this.name == "DeathSphere")
+            {
+                FirstPersonController_Sam.RemoveDecay();
+                FirstPersonController_Sam.DecayTimer = FirstPersonController_Sam.DecayTimerReset;
+            }
         }
     }
 }

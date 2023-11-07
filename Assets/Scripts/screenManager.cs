@@ -27,6 +27,9 @@ public class screenManager : MonoBehaviour
 
     static TextMeshProUGUI gunStatus;
     static TextMeshProUGUI playerHealth;
+    static Slider playerHealthbar;
+    static Slider reloadProgress;
+    static GameObject reloadProgressObj;
 
     public static Screen currentScreen;
     public static Screen lastScreen;
@@ -63,7 +66,15 @@ public class screenManager : MonoBehaviour
 
         gunStatus = gameplayObject.transform.Find("GunStatus").GetComponent<TextMeshProUGUI>();
         playerHealth = gameplayObject.transform.Find("PlayerHealth").GetComponent<TextMeshProUGUI>();
+        playerHealthbar = gameplayObject.transform.Find("PlayerHealth/Slider").GetComponent<Slider>();
+        reloadProgress = gameplayObject.transform.Find("GunStatus/Slider").GetComponent<Slider>();
         damageOverlay = GameObject.Find("DamageOverlay").GetComponent<Image>();
+
+        reloadProgress.maxValue = FirstPersonController_Sam.ReloadTimerMax;
+
+        reloadProgressObj = gameplayObject.transform.Find("GunStatus/Slider").gameObject;
+        reloadProgressObj.SetActive(false);
+
 
         ClearScreen();
     }
@@ -72,6 +83,7 @@ public class screenManager : MonoBehaviour
     void Update()
     {
         UpdatePlayerHealth();
+        reloadProgress.value = FirstPersonController_Sam.ReloadTimer;
     }
 
     public static void SetScreen(Screen input)
@@ -127,19 +139,25 @@ public class screenManager : MonoBehaviour
 
     public static void UpdateGunStatus(string input)
     {
+        if(FirstPersonController_Sam.Reloading)
+        {
+            if(!reloadProgressObj.activeSelf) reloadProgressObj.SetActive(true);
+        }
+        else if (reloadProgressObj.activeSelf) reloadProgressObj.SetActive(false);
+
         gunStatus.text = "Status: " + input;
     }
 
     public static void UpdatePlayerHealth()
     {
         float hp = FirstPersonController_Sam.GetPlayerHealth();
-        playerHealth.text = "HP: " + hp;
+        playerHealthbar.maxValue = FirstPersonController_Sam.PlayerMaxHealth;
+        playerHealthbar.value = hp;
 
-        if(hp <= 10)
+        if (hp <= 10)
         {
             Color tempcolor = damageOverlay.color;
-            tempcolor.a = 1 - (hp / 10);
-            Debug.Log(tempcolor.a);
+            tempcolor.a = 1f - (hp / 10f);
             damageOverlay.color = tempcolor;
         }
         if(hp > 10)

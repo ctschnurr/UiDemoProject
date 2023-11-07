@@ -129,20 +129,29 @@ public class FirstPersonController_Sam : MonoBehaviour
 
     private Transform projectileOrigin;
     private Transform guideOrigin;
-    private bool reloading = false;
-    private float reloadTimer = 2;
-    private float reloadTimerReset = 2;
+    private static bool reloading = false;
+    public static bool Reloading { get { return reloading; } }
+    private static float reloadTimer = 0;
+    public static float ReloadTimer { get { return reloadTimer; } }
+    private static float reloadTimerMax = 2;
+    public static float ReloadTimerMax { get { return reloadTimerMax; } }
+
 
     private static float playerHealth = 20;
-    private float playerMaxHealth = 20;
+    private static float playerMaxHealth = 20;
+    public static float PlayerMaxHealth { get { return playerMaxHealth; } }
     private bool regenerating = false;
     private static bool decaying = false;
     private float regenTimer = 3f;
     private float regenTimerReset = 3f;
-    private float decayTimer = 1f;
-    private float decayTimerReset = 1f;
+    private static float decayTimer = 1f;
+    public static float DecayTimer { get { return decayTimer; } set { decayTimer = value; } }
+    private static float decayTimerReset = 1f;
+    public static float DecayTimerReset { get { return decayTimerReset; } }
 
-    
+
+
+
 
     private void Awake()
     {
@@ -191,10 +200,10 @@ public class FirstPersonController_Sam : MonoBehaviour
 
         if(reloading)
         {
-            reloadTimer -= Time.deltaTime;
-            if(reloadTimer <= 0)
+            reloadTimer += Time.deltaTime;
+            if(reloadTimer >= reloadTimerMax)
             {
-                reloadTimer = reloadTimerReset;
+                reloadTimer = 0;
                 reloading = false;
 
                 ammoInClip = ammoReloadAmount;
@@ -223,8 +232,7 @@ public class FirstPersonController_Sam : MonoBehaviour
                     regenTimer -= Time.deltaTime;
                     if (regenTimer <= 0)
                     {
-                        playerHealth++;
-                        regenTimer = 1;
+                        playerHealth += Time.deltaTime;
                     }
                 }
                 else if (playerHealth >= playerMaxHealth)
@@ -244,8 +252,7 @@ public class FirstPersonController_Sam : MonoBehaviour
                     if (decayTimer <= 0)
                     {
                         screenManager.UpdateGunStatus("Corrosive Damage Detected");
-                        playerHealth--;
-                        decayTimer = decayTimerReset;
+                        playerHealth -= Time.deltaTime;
                     }
                 }
                 else
@@ -274,6 +281,7 @@ public class FirstPersonController_Sam : MonoBehaviour
         {
             ammoInClip--;
             gunHud.text = ammoInClip.ToString();
+            menuManager.SfxSource.Play();
             Instantiate(projectile, projectileOrigin.position, projectileOrigin.rotation);
         }
         else
@@ -286,7 +294,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     {
         gunHud.text = "-";
         reloading = true;
-        screenManager.UpdateGunStatus("Reloading...");
+        screenManager.UpdateGunStatus("Reloading:");
     }
 
     public static void SetDecay()
