@@ -28,7 +28,8 @@ public class screenManager : MonoBehaviour
     static TextMeshProUGUI gunStatus;
     static TextMeshProUGUI playerHealth;
     static Slider playerHealthbar;
-    static Slider reloadProgress;
+    static Slider playerStaminabar;
+    static Image reloadProgress;
     static GameObject reloadProgressObj;
 
     public static Screen currentScreen;
@@ -65,14 +66,14 @@ public class screenManager : MonoBehaviour
         };
 
         gunStatus = gameplayObject.transform.Find("GunStatus").GetComponent<TextMeshProUGUI>();
-        playerHealth = gameplayObject.transform.Find("PlayerHealth").GetComponent<TextMeshProUGUI>();
-        playerHealthbar = gameplayObject.transform.Find("PlayerHealth/Slider").GetComponent<Slider>();
-        reloadProgress = gameplayObject.transform.Find("GunStatus/Slider").GetComponent<Slider>();
+        playerHealthbar = gameplayObject.transform.Find("PlayerHealthSlider").GetComponent<Slider>();
+        playerStaminabar = gameplayObject.transform.Find("PlayerStaminaSlider").GetComponent<Slider>();
+        reloadProgress = gameplayObject.transform.Find("reloadProgress").GetComponent<Image>();
         damageOverlay = GameObject.Find("DamageOverlay").GetComponent<Image>();
 
-        reloadProgress.maxValue = FirstPersonController_Sam.ReloadTimerMax;
+        // reloadProgress.maxValue = FirstPersonController_Sam.ReloadTimerMax;
 
-        reloadProgressObj = gameplayObject.transform.Find("GunStatus/Slider").gameObject;
+        reloadProgressObj = gameplayObject.transform.Find("reloadProgress").gameObject;
         reloadProgressObj.SetActive(false);
 
 
@@ -82,8 +83,9 @@ public class screenManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdatePlayerHealth();
-        reloadProgress.value = FirstPersonController_Sam.ReloadTimer;
+        UpdatePlayerStats();
+
+        reloadProgress.fillAmount = FirstPersonController_Sam.ReloadTimer / FirstPersonController_Sam.ReloadTimerMax;
     }
 
     public static void SetScreen(Screen input)
@@ -148,11 +150,15 @@ public class screenManager : MonoBehaviour
         gunStatus.text = "Status: " + input;
     }
 
-    public static void UpdatePlayerHealth()
+    public static void UpdatePlayerStats()
     {
         float hp = FirstPersonController_Sam.GetPlayerHealth();
         playerHealthbar.maxValue = FirstPersonController_Sam.PlayerMaxHealth;
         playerHealthbar.value = hp;
+
+        float stamina = FirstPersonController_Sam.PlayerStamina;
+        playerStaminabar.maxValue = FirstPersonController_Sam.PlayerMaxStamina;
+        playerStaminabar.value = stamina;
 
         if (hp <= 10)
         {

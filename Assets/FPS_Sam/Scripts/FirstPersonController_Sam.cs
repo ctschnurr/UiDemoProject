@@ -139,6 +139,10 @@ public class FirstPersonController_Sam : MonoBehaviour
 
     private static float playerHealth = 20;
     private static float playerMaxHealth = 20;
+    private static float playerStamina = 2;
+    public static float PlayerStamina { get { return playerStamina; } }
+    private static float playerMaxStamina = 2;
+    public static float PlayerMaxStamina { get { return playerMaxStamina; } }
     public static float PlayerMaxHealth { get { return playerMaxHealth; } }
     private bool regenerating = false;
     private static bool decaying = false;
@@ -265,6 +269,24 @@ public class FirstPersonController_Sam : MonoBehaviour
                     state = State.inactive;
                 }
             }
+
+            if (playerStamina <= 0) canRun = false;
+
+            if (isRunning)
+            {
+                playerStamina -= Time.deltaTime;
+                if (playerStamina < 0) playerStamina = 0;
+            }
+
+            if(!isRunning && playerStamina < playerMaxStamina)
+            {
+                playerStamina += Time.deltaTime;
+                if (playerStamina > playerMaxStamina)
+                {
+                    playerStamina = playerMaxStamina;
+                    canRun = true;
+                }
+                }
         }
 
         
@@ -294,7 +316,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     {
         gunHud.text = "-";
         reloading = true;
-        screenManager.UpdateGunStatus("Reloading:");
+        screenManager.UpdateGunStatus("Reloading");
     }
 
     public static void SetDecay()
