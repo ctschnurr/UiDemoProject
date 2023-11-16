@@ -18,8 +18,6 @@ public class gameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        menuManager.MusicSource.Play();
-
         screenManager = GameObject.Find("ScreenManager").GetComponent<screenManager>();
         screenManager.SetupScreens();
 

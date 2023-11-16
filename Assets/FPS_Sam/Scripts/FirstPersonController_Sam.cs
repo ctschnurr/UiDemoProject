@@ -153,7 +153,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     private static float decayTimerReset = 1f;
     public static float DecayTimerReset { get { return decayTimerReset; } }
 
-
+    private static AudioSource sfxSource;
 
 
 
@@ -177,11 +177,27 @@ public class FirstPersonController_Sam : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        sfxSource = GameObject.Find("Player/SFXSource").GetComponent<AudioSource>();
     }
 
     private void Update()
     {
-        if(!gameManager.paused)
+
+        if (gameManager.paused)
+        {
+            sfxSource.Pause();
+        }
+        else
+        {
+            sfxSource.UnPause();
+
+            float sfxSliderValue = menuManager.sfxVolumeSlider.value;
+            sfxSource.volume = sfxSliderValue;
+
+        }
+
+        if (!gameManager.paused)
         {
             if (canMove)
             {
@@ -303,7 +319,7 @@ public class FirstPersonController_Sam : MonoBehaviour
         {
             ammoInClip--;
             gunHud.text = ammoInClip.ToString();
-            menuManager.SfxSource.Play();
+            sfxSource.Play();
             Instantiate(projectile, projectileOrigin.position, projectileOrigin.rotation);
         }
         else

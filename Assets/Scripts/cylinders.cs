@@ -4,16 +4,28 @@ using UnityEngine;
 
 public class cylinders : MonoBehaviour
 {
+    private static AudioSource sizzleSource;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        sizzleSource = GameObject.Find("DeathSphere/sfx").GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (gameManager.paused)
+        {
+            sizzleSource.Pause();
+        }
+        else
+        {
+            sizzleSource.UnPause();
+
+            float sfxSliderValue = menuManager.sfxVolumeSlider.value;
+            sizzleSource.volume = sfxSliderValue;
+
+        }
     }
 
     private void OnTriggerEnter(Collider other)
