@@ -18,6 +18,7 @@ public class screenManager : MonoBehaviour
     }
 
     static GameObject mainMenuObject;
+    static GameObject confirmHumanObject;
     static GameObject optionsObject;
     static GameObject gameplayObject;
     static GameObject pauseObject;
@@ -53,6 +54,9 @@ public class screenManager : MonoBehaviour
         winObject = transform.Find("Win").gameObject;
         loseObject = transform.Find("Lose").gameObject;
         creditsObject = transform.Find("Credits").gameObject;
+        confirmHumanObject = mainMenuObject.transform.Find("ConfirmHuman").gameObject;
+
+        confirmHumanObject.SetActive(false);
 
         screenList = new List<GameObject>
         {
@@ -62,7 +66,7 @@ public class screenManager : MonoBehaviour
             pauseObject,
             winObject,
             loseObject,
-            creditsObject
+            creditsObject,
         };
 
         gunStatus = gameplayObject.transform.Find("GunStatus").GetComponent<TextMeshProUGUI>();
@@ -132,6 +136,12 @@ public class screenManager : MonoBehaviour
                 break;
         }
 
+    }
+
+    public static void RobotScreen()
+    {
+        if (confirmHumanObject.activeSelf) confirmHumanObject.SetActive(false);
+        else confirmHumanObject.SetActive(true);
     }
 
     public static void ClearScreen()

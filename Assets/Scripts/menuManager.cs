@@ -15,12 +15,18 @@ public class menuManager : MonoBehaviour
 
     private static List<AudioSource> audioSources;
     static float delay = 0f;
+
+    public static Toggle humanToggle;
+    public static Button humanButton;
     // Start is called before the first frame update
     void Start()
     {
         screenManager = GameObject.Find("ScreenManager").GetComponent<screenManager>();
         volumeSlider = GameObject.Find("GameManager/ScreenManager/Options/VolumeSlider").GetComponent<Slider>();
         musicSource = GameObject.Find("GameManager/MenuManager/Music").GetComponent<AudioSource>();
+
+        humanToggle = GameObject.Find("GameManager/ScreenManager/MainMenu/ConfirmHuman/Toggle").GetComponent<Toggle>();
+        humanButton = GameObject.Find("GameManager/ScreenManager/MainMenu/ConfirmHuman/PLAY").GetComponent<Button>();
 
         sfxVolumeSlider = GameObject.Find("GameManager/ScreenManager/Options/SfxVolumeSlider").GetComponent<Slider>();
 
@@ -55,6 +61,18 @@ public class menuManager : MonoBehaviour
     {
         if (Screen.fullScreen == true) Screen.fullScreen = false;
         else Screen.fullScreen = true;
+    }
+
+    public void ConfirmNotRobot()
+    {
+        if (humanToggle.isOn) humanButton.interactable = true;
+
+        if (!humanToggle.isOn) humanButton.interactable = false;
+    }
+
+    public void ShowConfirmNotRobot()
+    {
+        screenManager.RobotScreen();
     }
 
     public void SetMainMenu()
