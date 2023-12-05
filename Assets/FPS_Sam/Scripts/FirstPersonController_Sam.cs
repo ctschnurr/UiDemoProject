@@ -175,9 +175,6 @@ public class FirstPersonController_Sam : MonoBehaviour
         playerHealth = playerMaxHealth;
         state = State.active;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
         sfxSource = GameObject.Find("Player/SFXSource").GetComponent<AudioSource>();
     }
 

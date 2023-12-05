@@ -70,6 +70,12 @@ public class menuManager : MonoBehaviour
         if (!humanToggle.isOn) humanButton.interactable = false;
     }
 
+    public void DismissInstructions()
+    {
+        screenManager.SetScreen(screenManager.Screen.gameplay);
+        paused = false;
+    }
+
     public void ShowConfirmNotRobot()
     {
         screenManager.RobotScreen();
@@ -112,8 +118,8 @@ public class menuManager : MonoBehaviour
 
     public void SetTitleScene()
     {
-        SetScene(sceneState.titleScene);
-        screenManager.SetScreen(screenManager.Screen.mainMenu);
+        screenManager.FadeToTitle();
+        humanToggle.isOn = false;
     }
 
     public void SetGameplayScene()
@@ -122,7 +128,7 @@ public class menuManager : MonoBehaviour
         screenManager.SetScreen(screenManager.Screen.gameplay);
     }
 
-    public void NewGame()
+    public static void NewGame()
     {
         SetScene(sceneState.gameplayScene);
         screenManager.SetScreen(screenManager.Screen.gameplay);

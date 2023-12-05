@@ -441,6 +441,14 @@ PrefabInstance:
       propertyPath: m_text
       value: MUSIC VOLUME
       objectReference: {fileID: 0}
+    - target: {fileID: 2357096772443061735, guid: 63c7c9fd3fae7684a9952069c7c679fd, type: 3}
+      propertyPath: m_ScreenMatchMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2357096772443061735, guid: 63c7c9fd3fae7684a9952069c7c679fd, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3768525416737830488, guid: 63c7c9fd3fae7684a9952069c7c679fd, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 5
@@ -487,6 +495,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8007873289191256837, guid: 63c7c9fd3fae7684a9952069c7c679fd, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344114852417979054, guid: 63c7c9fd3fae7684a9952069c7c679fd, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1838302059}
+    - target: {fileID: 8344114852417979054, guid: 63c7c9fd3fae7684a9952069c7c679fd, type: 3}
+      propertyPath: m_RenderMode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8420350193485820525, guid: 63c7c9fd3fae7684a9952069c7c679fd, type: 3}

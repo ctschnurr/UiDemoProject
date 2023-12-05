@@ -11,7 +11,7 @@ public class gameManager : MonoBehaviour
         gameplayScene
     }
 
-    public static bool paused = false;
+    public static bool paused = true;
 
     screenManager screenManager;
 
@@ -51,13 +51,11 @@ public class gameManager : MonoBehaviour
             case sceneState.titleScene:
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                //if (paused) Pause();
                 SceneManager.LoadScene("TitleScene");
                 break;
 
             case sceneState.gameplayScene:
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
-                paused = false;
                 SceneManager.LoadScene("GameplayScene");
                 break;
         }
@@ -101,4 +99,5 @@ public class gameManager : MonoBehaviour
         Cursor.visible = true;
         screenManager.SetScreen(screenManager.Screen.lose);
     }
+
 }
