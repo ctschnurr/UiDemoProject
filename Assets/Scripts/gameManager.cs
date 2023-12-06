@@ -49,10 +49,10 @@ public class gameManager : MonoBehaviour
         switch(input)
         {
             case sceneState.titleScene:
+                if (paused) Pause();
+                SceneManager.LoadScene("TitleScene");
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                //if (paused) Pause();
-                SceneManager.LoadScene("TitleScene");
                 break;
 
             case sceneState.gameplayScene:

@@ -63,6 +63,8 @@ public class screenManager : MonoBehaviour
     static GameObject instructionsNext;
     static GameObject instructionsBack;
 
+    static GameObject pauseBackground;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -92,6 +94,8 @@ public class screenManager : MonoBehaviour
         instructionsPlayButton = instructionsObject.transform.Find("Play").GetComponent<Button>();
         instructionsNextButton = instructionsObject.transform.Find("Next").GetComponent<Button>();
 
+        pauseBackground = transform.Find("Pause/background").gameObject;
+        
         fadeScreenObj.SetActive(false);
 
         // confirmHumanObject.SetActive(false);
@@ -154,20 +158,18 @@ public class screenManager : MonoBehaviour
 
     public static void FadeToTitle()
     {
-        Time.timeScale = 1;
-
         switch (titleFadeStage)
         {
             case 0:
                 titleFadeStage++;
                 fadeScreenObj.SetActive(true);
-                LeanTween.alpha(fadeScreenImg.GetComponent<RectTransform>(), 1, 1).setOnComplete(FadeToTitle);
+                LeanTween.alpha(fadeScreenImg.GetComponent<RectTransform>(), 1, 1).setOnComplete(FadeToTitle).setIgnoreTimeScale(true);
                 break;
             case 1:
                 titleFadeStage++;
                 gameManager.SetScene(gameManager.sceneState.titleScene);
                 SetScreen(Screen.mainMenu);
-                LeanTween.alpha(fadeScreenImg.GetComponent<RectTransform>(), 0, 1).setDelay(.5f).setOnComplete(FadeToTitle);
+                LeanTween.alpha(fadeScreenImg.GetComponent<RectTransform>(), 0, 1).setDelay(.5f).setOnComplete(FadeToTitle).setIgnoreTimeScale(true);
                 break;
             case 2:
                 titleFadeStage = 0;
@@ -201,6 +203,7 @@ public class screenManager : MonoBehaviour
                 break;
 
             case Screen.pause:
+                LeanTween.rotateAround(pauseBackground, Vector3.forward, 360, 7f).setLoopClamp().setIgnoreTimeScale(true);
                 pauseObject.SetActive(true);
                 currentScreen = Screen.pause;
                 break;
